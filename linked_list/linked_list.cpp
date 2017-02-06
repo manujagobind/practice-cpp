@@ -339,29 +339,32 @@ template <typename T>
 void LinkedList<T>::reverse(){
   Node<T> *a = this->get_head(), *b, *c;
 
-  if(a->has_next()){
-    b = a->get_next();
-  } else{
-    //List has only 1 element
-    return;
-  }
+  if(this->get_head()){
 
-  if(b->has_next()){
-    a->set_next(NULL);
-    while(b->has_next()){
-      c = b->get_next();
-      b->set_next(a);
-      a = b;
-      b = c;
+    if(a->has_next()){
+      b = a->get_next();
+    } else{
+      //List has only 1 element
+      return;
     }
-    b->set_next(a);
-    this->set_head(b);
-  }
-  else{
-    //List has only two elements
-    a->set_next(NULL);
-    b->set_next(a);
-    this->set_head(b);
+
+    if(b->has_next()){
+      a->set_next(NULL);
+      while(b->has_next()){
+        c = b->get_next();
+        b->set_next(a);
+        a = b;
+        b = c;
+      }
+      b->set_next(a);
+      this->set_head(b);
+    }
+    else{
+      //List has only two elements
+      a->set_next(NULL);
+      b->set_next(a);
+      this->set_head(b);
+    }
   }
 }
 
@@ -370,10 +373,10 @@ int main(){
   LinkedList<int> list;
   //Node<int> *node = new Node<int>(5);
   //Node<int> *node2 = new Node<int>(6);
-  list.push_back(7);
-  list.push_front(2);
-  list.push_back(5);
-  list.push_back(6);
+  //list.push_back(7);
+  //list.push_front(2);
+  //list.push_back(5);
+  //list.push_back(6);
   list.show();
   list.reverse();
   list.show();
