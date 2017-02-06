@@ -335,6 +335,36 @@ T LinkedList<T>::value_from_end(int n){
   }
 }
 
+template <typename T>
+void LinkedList<T>::reverse(){
+  Node<T> *a = this->get_head(), *b, *c;
+
+  if(a->has_next()){
+    b = a->get_next();
+  } else{
+    //List has only 1 element
+    return;
+  }
+
+  if(b->has_next()){
+    a->set_next(NULL);
+    while(b->has_next()){
+      c = b->get_next();
+      b->set_next(a);
+      a = b;
+      b = c;
+    }
+    b->set_next(a);
+    this->set_head(b);
+  }
+  else{
+    //List has only two elements
+    a->set_next(NULL);
+    b->set_next(a);
+    this->set_head(b);
+  }
+}
+
 int main(){
 
   LinkedList<int> list;
@@ -343,8 +373,9 @@ int main(){
   list.push_back(7);
   list.push_front(2);
   list.push_back(5);
-  list.push_back(2);
+  list.push_back(6);
   list.show();
+  list.reverse();
   list.show();
   //list.erase_at(0);
   //cout << list.value_from_end(1) << endl;
