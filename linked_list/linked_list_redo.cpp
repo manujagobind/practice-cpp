@@ -30,12 +30,17 @@ public:
 	T pop_front();
 	void push_back(T data);
 	T pop_back();
-	int size();
+	int size();	//Number of nodes in the list
 	void reverse();
 	T value_at(int);
 	void insert_at(int, T);
 	void erase_at(int);
 	T value_from_end(int);	
+	void swap(T, T); //Swap two nodes without swapping data
+	void rotate(int); //Rotate list counter-clockwise by k positions
+	void del();	//Delete the list	
+	T mid(); //Return data at middle node
+	bool search(T);	//Search for an element
 };
 
 template <typename T>
@@ -220,19 +225,186 @@ void LinkedList<T>::insert_at(int index, T data){
 	}
 }
 
+template <typename T>
+void LinkedList<T>::erase_at(int index){
+	
+	int count = 0;
+	Node<T> *cur = this->get_head(), *prev = NULL;
+	
+	while(cur && count < index){
+		prev = cur;
+		cur = cur->get_next();
+		count++;
+	}
+	
+	if(count == 0){
+		this->set_head(cur->get_next());
+		delete cur;
+	}
+	else if(count == index){
+		prev->set_next(cur->get_next());
+		delete cur;
+	} else{
+		cout << "\nInvalid Index\n";
+	}
+}
+
+template <typename T>
+T LinkedList<T>::value_from_end(int index){
+	
+	/*	Indexing starts from 0
+		If index = 0, return last element
+		If index = 1, return second last element
+		And so on. . */
+		
+	int num = this->size() - index;
+	
+	if(num > 0){
+		int count = 1;
+		Node<T> *cur = this->get_head();
+		while(cur && count < num){
+			cur = cur->get_next();
+			count++;
+		}
+		
+		return cur->get_data();
+	} else{
+		cout << "\nInvalid Index\n";
+		return ERROR;
+	}		
+}
+
+template <typename T>
+void LinkedList<T>::swap(T x, T y){
+	//Assuming both values are present in the list
+	
+	if(x == y){
+		return;
+	}
+	
+	Node<T> *x_prev, *x_cur, *y_prev, *y_cur;
+	Node<T> *cur = this->get_head(), *prev = NULL;
+	x_cur = this->get_head();
+	x_prev = NULL;
+	
+	while(x_cur && x_cur->get_data() != x){
+		x_prev = x_cur;
+		x_cur = x_cur->get_next();
+	}
+	
+	y_cur = this->get_head();
+	y_prev = NULL;
+	while(y_cur && y_cur->get_data() != y){
+		y_prev = y_cur;
+		y_cur = y_cur->get_next();
+	}
+	
+	if(x_prev){
+		x_prev->set_next(y_cur);
+	} else{
+		this->set_head(y_cur);
+	}
+	
+	if(y_prev){
+		y_prev->set_next(x_cur);
+	} else{
+		this->set_head(x_cur);
+	}
+	
+	Node<T> *temp = y_cur->get_next();
+	y_cur->set_next(x_cur->get_next());		
+	x_cur->set_next(temp);
+}
+
+template <typename T>
+void LinkedList<T>::rotate(int k){
+	//Assuming k > 0 and k < size of the list
+	
+	if(k <= 0){
+		return;
+	}
+	
+	int count = 1;
+	Node<T> *start, *cur, *new_head;
+	start = cur = this->get_head();
+	
+	while(count < k && cur){		
+		cur = cur->get_next();
+		count++;
+	}
+	
+	if(cur->has_next()){
+		new_head = cur->get_next();
+		this->set_head(new_head);
+		cur->set_next(NULL);	
+		
+		while(new_head->has_next()){			
+			new_head = new_head->get_next();
+		}
+				
+		if(start){			
+			new_head->set_next(start);
+		}		
+	}
+}
+
+template <typename T>
+void LinkedList<T>::del(){
+	
+	Node<T> *cur = this->get_head(), *next;
+	while(cur){
+		next = cur->get_next();
+		delete cur;
+		cur = next;
+	}
+	this->set_head(NULL);
+}
+
+template <typename T>
+T LinkedList<T>::mid(){
+	
+	Node<T> *ptr1, *ptr2;
+	ptr1 = ptr2 = this->get_head();
+	
+	while(ptr1 && ptr1->has_next()){
+		ptr1 = ptr1->get_next()->get_next();
+		ptr2 = ptr2->get_next();
+	}
+	
+	return ptr2->get_data();
+}
+
+template <typename T>
+bool LinkedList<T>::search(T element){
+	
+	Node<T> *cur = this->get_head();
+	while(cur){
+		if(cur->get_data() == element){
+			return true;
+		}
+		cur = cur->get_next();
+	}
+	return false;
+}
+
 int main(){
 	
 	LinkedList<int> L;
 	L.print();
 	L.push_back(5);
+	L.push_front(4);
 	L.push_front(10);
 	L.push_front(3);
 	L.push_back(6);	
 	L.print();	
-	cout << L.value_at(3) << endl;
-	L.insert_at(3, 7);	
+	cout << L.value_at(3) << endl;	
+	//L.erase_at(3);	
+	//L.swap(4, 5);
 	//L.reverse();
+	//cout << L.value_from_end(2) << endl; 
+	//L.rotate(3);
+	cout << L.search(5) << endl;
 	L.print();	
-	cout << L.value_at(6) << endl;
+	//cout << L.value_at(2) << endl;
 	return 0;
 }
