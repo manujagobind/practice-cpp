@@ -1,7 +1,5 @@
 *.out
-GeeksForGeeks/*
-STL/*
-heaps/
 *.exe
 temp/
+temp.*
 *.swp
