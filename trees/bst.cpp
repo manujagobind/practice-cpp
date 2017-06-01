@@ -182,7 +182,8 @@ BSTNode<T>* successor(BSTNode<T> *root, T value){
   if(root == NULL)
     return NULL;
 
-  BSTNode<T>* node = root;
+  BSTNode<T>* node = root, *succ = NULL;
+
   while(node->data != value){
     if(value < node->data)
       node = node->left;
@@ -191,18 +192,39 @@ BSTNode<T>* successor(BSTNode<T> *root, T value){
   }
 
   if(node->right)
-    return minimum(node->right);
+    succ = minimum(node->right);
   else{
     BSTNode<T> *ancestor = root;
-    //TODO
+    while(ancestor){
+      if(value < ancestor->data){
+        succ = ancestor;
+        ancestor = ancestor->left;
+      } else if (value > ancestor->data)
+        ancestor = ancestor->right;
+      else
+          break;
+    }
   }
-
+  return succ;
 }
 
 //Returns true if the tree is a binary search tree
 template <typename T>
 bool isBST(BSTNode<T> *root){
-  //TODO
+  
+  int min, max;
+  min = minimum(root)->data;
+  max = maximum(root)->data;
+  return check(root, min, max);
+}
+
+template <typename T>
+bool check(BSTNode<T> *node, int min, int max){
+  if(node == NULL)
+    return true;
+  if(node->data < min || node->data > max)
+    return false;
+  return check(node->left, min, node->data) && check(node->right, node->data, max);
 }
 
 
@@ -222,26 +244,18 @@ int main(){
   cout << endl;
   levelorder(root);
   cout << endl;
-  cout << successor(root, 7)->data;
-  //root = delete_tree(root);
-  //root = delete_value(root, 5);
-  //cout << endl;
-  //inorder(root);
-  //levelorder(root);
-  //cout << endl;
-  //root = delete_value(root, 5);
-  //cout << endl;
-  //inorder(root);
-  //cout << endl;
-  //levelorder(root);
-  //root = delete_value(root, 3);
-  //cout << endl;
-  //inorder(root);
-  //cout << endl;
-  //levelorder(root);
+  cout << successor(root, 1)->data << endl;
+  cout << isBST(root);  
+  root = delete_value(root, 5);
+  root = delete_value(root, 3);
   cout << endl;
-  //cout << "Min " << minimum(root->right)->data << endl;
-  //cout << "Count " << get_node_count(root) << endl;
-  //cout << "Height " << get_height(root) << endl;
+  inorder(root);
+  cout << endl;
+  levelorder(root);
+  cout << endl;
+  cout << "Min " << minimum(root->right)->data << endl;
+  cout << "Count " << get_node_count(root) << endl;
+  cout << "Height " << get_height(root) << endl;
+  root = delete_tree(root);
   return 0;
 }
