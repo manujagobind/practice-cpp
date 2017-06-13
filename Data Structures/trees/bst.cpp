@@ -50,6 +50,34 @@ void levelorder(BSTNode<T> *root){
   }
 }
 
+//Morris Traversal: inorder traversal without either using recursion or stacks
+template <typename T>
+void MorrisTraversal(BSTNode<T> *root){
+	if(!root)
+		return;
+
+	BSTNode<T> *current=root, *predecessor=NULL;
+	while(current){
+		if(!current->left){
+			cout << current->data << " ";
+			current = current->right;
+		} else{
+			predecessor = current->left;
+			while(predecessor->right && predecessor->right != current)
+				predecessor = predecessor->right;			
+			
+			if(!predecessor->right){
+				predecessor->right = current;
+				current = current->left;
+			} else{
+				predecessor->right = NULL;
+				cout << current->data << " ";
+				current = current->right;
+			}
+		}
+	}
+}
+
 //Insert an element to the tree
 template <typename T>
 BSTNode<T>* insert(BSTNode<T> *root, T value){
@@ -241,6 +269,8 @@ int main(){
   root = insert(root, 10);
 
   inorder(root);
+  cout << endl;
+  MorrisTraversal(root);
   cout << endl;
   levelorder(root);
   cout << endl;
